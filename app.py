@@ -1,17 +1,15 @@
 import streamlit as st
 import pandas as pd
 import pickle
-import matplotlib.pyplot as plt
-import numpy as np
 
-# --- PAGE CONFIG ---
+# Page Config
 st.set_page_config(
     page_title="Insurance Premium Analyzer 💰",
     page_icon="💸",
     layout="centered"
 )
 
-# --- LOAD MODEL ---
+# Load model
 with open("best_model (4).pkl", "rb") as f:
     model = pickle.load(f)
 
@@ -53,10 +51,8 @@ input_df = pd.DataFrame({
     "region": [region]
 })
 
-# One-hot encode categorical variables
 input_encoded = pd.get_dummies(input_df, drop_first=True)
 
-# Match model feature columns
 model_features = getattr(model, "feature_names_in_", None)
 if model_features is not None:
     for col in model_features:
@@ -69,8 +65,7 @@ if st.button("🔮 Predict My Insurance Cost"):
     try:
         prediction = model.predict(input_encoded)[0]
         st.success("✅ Prediction Successful!")
-
-        # Styled output card
+        
         st.markdown(
             f"""
             <div style="background-color:#F0FFF0; padding:20px; border-radius:15px; text-align:center;">
@@ -80,30 +75,14 @@ if st.button("🔮 Predict My Insurance Cost"):
             """,
             unsafe_allow_html=True
         )
-
+        
         st.markdown(
             """
             ---
-            🧠 **Tip:** Your premium depends heavily on BMI and smoking habits.  
-            Lowering BMI or quitting smoking can significantly reduce your insurance cost.
+            🧠 **Tip:** Your premium depends heavily on BMI and smoking habits.
+            Lowering BMI or quitting smoking can significantly reduce insurance costs.
             """
         )
-
-        # --- FEATURE IMPORTANCE SECTION ---
-        st.markdown("### 📊 Feature Importance")
-        if hasattr(model, "feature_importances_"):
-            importance = model.feature_importances_
-            feature_names = model.feature_names_in_
-            fi_df = pd.DataFrame({"Feature": feature_names, "Importance": importance})
-            fi_df = fi_df.sort_values("Importance", ascending=True)
-
-            fig, ax = plt.subplots()
-            ax.barh(fi_df["Feature"], fi_df["Importance"])
-            ax.set_xlabel("Importance")
-            ax.set_title("Feature Importance")
-            st.pyplot(fig)
-        else:
-            st.info("Feature importance not available for this model.")
 
     except Exception as e:
         st.error(f"❌ Error in prediction: {e}")
