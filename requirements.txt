@@ -1,18 +1,5 @@
-pip install -r requirements.txt
-
-## ▶️ How to Run the App
-
-### 1. Clone or download the repository
-```bash
-git clone https://github.com/yourusername/insurance-predictor.git
-cd insurance-predictor
-streamlit run app.py
-
----
-
-### 📦 **2. requirements.txt**
-```txt
 streamlit
 pandas
 numpy
 scikit-learn
+
